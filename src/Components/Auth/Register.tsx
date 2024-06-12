@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -10,25 +10,24 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { useRegisterMutation } from "../../redux/api/authApi"; // Assume this is the API call
 import { useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "../../redux/store";
-import { registerUser } from "../../redux/features/auth/authSlice";
+
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>();
+  const [registerUser, { isLoading }] = useRegisterMutation();
+  const [error, setError] = useState<string | null>(null);
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -38,44 +37,30 @@ const Register: React.FC = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const validatePassword = (password: string) => {
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long";
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
-      return "Password must contain at least one special character";
-    }
-    return "";
-  };
-
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const passwordValidationError = validatePassword(password);
-    const confirmPasswordValidationError =
-      password !== confirmPassword ? "Passwords do not match" : "";
-
-    setPasswordError(passwordValidationError);
-    setConfirmPasswordError(confirmPasswordValidationError);
-
-    if (passwordValidationError || confirmPasswordValidationError) {
+  const onSubmit = async (data: FormData) => {
+    if (data.password !== data.confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
-    dispatch(registerUser({ email, password, name }));
-  };
+    try {
+      const response = await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password
+      }).unwrap();
 
-  useEffect(() => {
-    if (!loading && !error) {
-      navigate("/sign-in");
+      if (response) {
+        navigate("/sign-in");
+      }
+    } catch (err: any) {
+      setError("Registration Error: " + err.message);
     }
-  }, [loading, error, navigate]);
+  };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -89,22 +74,17 @@ const Register: React.FC = () => {
         <Typography component="h1" variant="h5">
           Create a new account
         </Typography>
-        <Box
-          component="form"
-          noValidate
-          sx={{ mt: 3 }}
-          onSubmit={handleRegister}
-        >
+        <Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmit(onSubmit)}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="name"
             label="Full Name"
-            name="name"
             autoComplete="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            {...register("name", { required: "Full Name is required" })}
+            error={!!errors.name}
+            helperText={errors.name && errors.name.message}
           />
           <TextField
             margin="normal"
@@ -112,24 +92,22 @@ const Register: React.FC = () => {
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email", { required: "Email is required", pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" } })}
+            error={!!errors.email}
+            helperText={errors.email && errors.email.message}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="New Password"
             type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={!!passwordError}
-            helperText={passwordError}
+            {...register("password", { required: "Password is required" })}
+            error={!!errors.password}
+            helperText={errors.password && errors.password.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -148,15 +126,13 @@ const Register: React.FC = () => {
             margin="normal"
             required
             fullWidth
-            name="confirmPassword"
             label="Confirm Password"
             type={showConfirmPassword ? "text" : "password"}
             id="confirmPassword"
             autoComplete="current-password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            error={!!confirmPasswordError}
-            helperText={confirmPasswordError}
+            {...register("confirmPassword", { required: "Please confirm your password" })}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword && errors.confirmPassword.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -176,7 +152,7 @@ const Register: React.FC = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            disabled={isLoading}
           >
             Sign Up
           </Button>
