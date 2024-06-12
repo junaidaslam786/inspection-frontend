@@ -8,6 +8,7 @@ import Dashboard from "../Pages/Dashboard/Dashboard";
 import CompanyRegistrationPage from "../Pages/Auth/CompanyRegistrationPage";
 import TransactionFormPage from "../Pages/Transaction/TransactionFormPage";
 import SalesPage from "../Pages/Sales/SalesPage";
+import CreatCustomerPage from "../Pages/Customer/CreatcustomerPage";
 
 const RoutesContent: React.FC = () => {
   const routes = useRoutes([
@@ -19,6 +20,7 @@ const RoutesContent: React.FC = () => {
     { path: "/company-registration", element: <CompanyRegistrationPage /> },
     { path: "/transaction-form", element: <TransactionFormPage /> },
     { path: "/sales", element: <SalesPage /> },
+    { path: "/creat-customer", element: <CreatCustomerPage /> },
   ]);
 
   return routes;

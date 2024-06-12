@@ -7,7 +7,6 @@ import StackedAreas from "./Constant/CashChart";
 const CashFlowChart: React.FC = () => {
   return (
     <Box>
-      <h1>Cashflow</h1>
      <StackedAreas />
     </Box>
   );
