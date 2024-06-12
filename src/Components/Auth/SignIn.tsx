@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FormControlLabel,
   Checkbox,
@@ -12,41 +12,51 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { AppDispatch, RootState } from '../../redux/store';
-import { loginUser } from '../../redux/features/auth/authSlice';
+import { useForm } from "react-hook-form";
+import { useLoginMutation } from "../../redux/api/authApi";
+import { setUser } from "../../redux/features/user/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCookie } from "typescript-cookie";
+
+interface FormData {
+  email: string;
+  password: string;
+}
 
 const SignIn: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { loading, error, token } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+  const [loginUser, { isLoading }] = useLoginMutation();
+  const [error, setError] = useState<string | null>(null);
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(loginUser({ email, password }));
-  };
-
-  useEffect(() => {
-    if (token) {
-      Cookies.set('token', token, { expires: 1 });
-      Cookies.set('lastLogin', new Date().toISOString(), { expires: 1 });
-      navigate('/company-registration');
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await loginUser(data).unwrap();
+      console.log("Response from server:", response);
+      setCookie("token", response.token);
+      dispatch(setUser(response.user));
+      navigate("/");
+    } catch (err: any) {
+      setError("Login Error: " + err.message);
     }
-  }, [token, navigate]);
+  };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -61,30 +71,35 @@ const SignIn: React.FC = () => {
         <Typography component="h1" variant="h5">
           Sign in to your account
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSignIn}>
+        <Box
+          component="form"
+          noValidate
+          sx={{ mt: 3 }}
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
             autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email", { required: "Email is required" })}
+            error={!!errors.email}
+            helperText={errors.email && errors.email.message}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Password"
             type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password", { required: "Password is required" })}
+            error={!!errors.password}
+            helperText={errors.password && errors.password.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -120,11 +135,15 @@ const SignIn: React.FC = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            disabled={isLoading}
           >
             Sign in
           </Button>
-          {error && <Typography color="error">{error}</Typography>}
+          {error && (
+            <Typography color="error" sx={{ marginBottom: "1vw" }}>
+              {error}
+            </Typography>
+          )}
           <Box
             sx={{
               display: "flex",
