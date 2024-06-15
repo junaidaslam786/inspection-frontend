@@ -7,7 +7,7 @@ const PieChartReport: React.FC = () => {
     <Box sx={{
       
     }}>
-      <h1> PieChartReport</h1>
+      {/* <h1> PieChartReport</h1> */}
       <PieChartData />
     </Box>
   );

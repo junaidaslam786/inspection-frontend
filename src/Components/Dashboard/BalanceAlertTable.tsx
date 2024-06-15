@@ -6,7 +6,6 @@ import client from "./Constant/balance";
 const BalanceAlertTable: React.FC = () => {
   return (
     <Box sx={{width:"100%",}}>
-      <h1>BalanceAlertTable</h1>
       <BalanceTable
       clients={client}
       />
