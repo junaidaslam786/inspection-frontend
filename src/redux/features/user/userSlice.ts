@@ -1,48 +1,38 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { setCookie, removeCookie } from "typescript-cookie";
+// src/redux/features/user/userSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface User {
-  id: string;
-  name: string;
-  email: string;
+id: string;
+name: string;
+email: string;
 }
 
-interface UserState {
+interface AuthState {
+  token: string | null;
   user: User | null;
 }
 
-const initialState: UserState = {
+const initialState: AuthState = {
+  token: null,
   user: null,
 };
 
-const cleanUserData = (user: User): Partial<User> => {
-  const excludeFields = ["password", "rememberToken", "email"];
-  return Object.keys(user)
-    .filter((key) => !excludeFields.includes(key))
-    .reduce((obj, key) => {
-      obj[key as keyof User] = user[key as keyof User];
-      return obj;
-    }, {} as Partial<User>);
-};
-
-export const userSlice = createSlice({
-  name: "userSlice",
+const userSlice = createSlice({
+  name: 'auth',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      localStorage.removeItem("userData");
-      removeCookie("token");
-    },
     setUser: (state, action: PayloadAction<User>) => {
-      const cleanedUser = cleanUserData(action.payload);
-      state.user = { ...cleanedUser, ...action.payload };
-      localStorage.setItem("userData", JSON.stringify(cleanedUser));
-      setCookie("token", "your_token_value_here", { expires: 7 });
+      state.user = action.payload;
+    },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+    },
+    logout: (state) => {
+      state.token = null;
+      state.user = null;
     },
   },
 });
 
+export const { setUser, setToken, logout } = userSlice.actions;
 export default userSlice.reducer;
-
-export const { logout, setUser } = userSlice.actions;

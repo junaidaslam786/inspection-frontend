@@ -49,10 +49,10 @@ const SignIn: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     try {
       const response = await loginUser(data).unwrap();
-      console.log("Response from server:", response);
+      console.log("User Signed In Successfully!");
       setCookie("token", response.token);
       dispatch(setUser(response.user));
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       setError("Login Error: " + err.message);
     }

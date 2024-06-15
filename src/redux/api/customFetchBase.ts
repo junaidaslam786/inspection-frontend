@@ -6,15 +6,14 @@ import {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 import { logout } from "../features/user/userSlice";
-import { RootState } from "../store";
+import { getCookie } from "typescript-cookie"; // Import typescript-cookie
 
-const baseUrl = `/`;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
-  prepareHeaders: (headers, { getState }) => {
-    const token =
-      (getState() as RootState).auth.token || localStorage.getItem("token");
+  prepareHeaders: (headers) => {
+    const token = getCookie("token"); // Get token from cookies
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -40,21 +39,8 @@ const customFetchBase: BaseQueryFn<
     result.error?.status === 401 &&
     (result.error.data as CustomError)?.message === "You are not logged in"
   ) {
-    const refreshResult = await baseQuery(
-      { url: "superadmin/auth/refresh", method: "GET", credentials: "include" },
-      api,
-      extraOptions
-    );
-
-    if (refreshResult.data && (refreshResult.data as any).token) {
-      const newToken = (refreshResult.data as any).token;
-      localStorage.setItem("token", newToken);
-
-      result = await baseQuery(args, api, extraOptions);
-    } else {
-      api.dispatch(logout());
-      window.location.href = "/login";
-    }
+    api.dispatch(logout());
+    window.location.href = "/login"; // Redirect on logout
   }
 
   return result;

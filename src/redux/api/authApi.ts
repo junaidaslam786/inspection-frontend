@@ -48,7 +48,7 @@ export const authApi = createApi({
       ) {
         try {
           const { data } = await queryFulfilled;
-          setCookie("token", data.token, { expires: 7 });
+          setCookie("token", data.token, { expires: 1 });
         } catch (error) {
           console.error("Login error:", error);
         }
