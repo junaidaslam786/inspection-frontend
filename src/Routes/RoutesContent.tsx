@@ -15,12 +15,8 @@ const RoutesContent: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-  const token = getCookie("token");
-  if (token) {
-    setIsAuthenticated(true);
-  } else {
-    setIsAuthenticated(false);
-  }
+    const token = getCookie("token");
+    setIsAuthenticated(!!token);
   }, []);
 
   return (

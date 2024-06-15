@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import reports from "./Constant/report";
 import BalanceCard from "./Constant/BalanceCard";
 
@@ -19,13 +19,14 @@ const Reports: React.FC = () => {
       <Box sx={{ width: "100%", height: "5vh" }}>
         <Typography variant="h6">Reports</Typography>
       </Box>
+      <Link href="/transaction-form">page link</Link>
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr", // 1 column for extra-small screens
-            sm: "repeat(2, 1fr)", // 2 columns for small screens
-            md: "repeat(3, 1fr)", // 3 columns for medium screens and above
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
           },
           gap: "3vmin",
           width: "100%",
