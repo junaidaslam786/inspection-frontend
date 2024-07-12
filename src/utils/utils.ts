@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 interface UserPayload {
@@ -8,7 +7,7 @@ interface UserPayload {
 }
 
 export const getUserFromToken = (): UserPayload | null => {
-  const token = Cookies.get("token");
+  const token = localStorage.getItem("token");
   if (!token) return null;
 
   try {

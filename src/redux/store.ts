@@ -3,22 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { combineReducers } from "redux";
 
 import { authApi } from "./api/authApi";
-import { companyApi } from "./api/companyApi";
 
 import userReducer from "./features/user/userSlice";
-import companyReducer from "./features/company/companySlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
-  company: companyReducer,
   [authApi.reducerPath]: authApi.reducer,
-  [companyApi.reducerPath]: companyApi.reducer,
 });
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, companyApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

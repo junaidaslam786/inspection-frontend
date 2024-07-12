@@ -6,14 +6,13 @@ import {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 import { logout } from "../features/user/userSlice";
-import { getCookie } from "typescript-cookie"; // Import typescript-cookie
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: (headers) => {
-    const token = getCookie("token"); // Get token from cookies
+    const token = localStorage.getItem("token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

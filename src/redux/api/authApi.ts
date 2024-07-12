@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCookie, getCookie } from "typescript-cookie";
 
 interface AuthResponse {
   token: string;
@@ -24,7 +23,7 @@ interface RegisterRequest {
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL,
   prepareHeaders: (headers: Headers, {}: { getState: () => any }) => {
-    const token = getCookie("token");
+    const token = localStorage.getItem("token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -48,7 +47,7 @@ export const authApi = createApi({
       ) {
         try {
           const { data } = await queryFulfilled;
-          setCookie("token", data.token, { expires: 1 });
+          localStorage.setItem("token", data.token);
         } catch (error) {
           console.error("Login error:", error);
         }
