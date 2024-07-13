@@ -1,11 +1,12 @@
 import React from "react";
-import SignIn from "../../Components/Auth/SignIn";
+import ClientSignIn from "../../Components/Auth/ClientSignIn";
 import { useLoginMutation } from "../../redux/api/authApi";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../../redux/features/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import AuthLayout from "../../Layouts/AuthLayout";
 
-const SignInPage: React.FC = () => {
+const ClientSignInPage: React.FC = () => {
   const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,10 +23,10 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-      <SignIn onSubmit={handleLogin} />
-    </div>
+    <AuthLayout>
+      <ClientSignIn onSubmit={handleLogin} />
+    </AuthLayout>
   );
 };
 
-export default SignInPage;
+export default ClientSignInPage;

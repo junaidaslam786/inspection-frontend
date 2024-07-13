@@ -1,11 +1,17 @@
-import React from 'react'
+import React from "react";
+import Sidebar from "../Components/Constants/Sidebar";
 
-const MainLayout: React.FC = () => {
-  return (
-    <div>
-      NOTHING TO SHOW YET
-    </div>
-  )
+interface MainLayoutProps {
+  children: React.ReactNode;
 }
 
-export default MainLayout
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  return (
+    <Sidebar>
+      <div></div>
+      {children}
+    </Sidebar>
+  );
+};
+
+export default MainLayout;

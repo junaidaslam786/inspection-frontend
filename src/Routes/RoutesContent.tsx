@@ -1,14 +1,16 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../Middleware/ProtectedRoutes";
-import SignInPage from "../Pages/Auth/SignInPage";
+import ClientSignInPage from "../Pages/Auth/ClientSignInPage";
 import DashboardPage from "../Pages/Dashboard/DashboardPage";
+import ManagementSignInPage from "../Pages/Auth/ManagementSignInPage";
 
 const RoutesContent: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<SignInPage />} />
-      <Route path="/sign-in" element={<SignInPage />} />
+      <Route path="/" element={<ClientSignInPage />} />
+      <Route path="/sign-in" element={<ClientSignInPage />} />
+      <Route path="/sign" element={<ManagementSignInPage />} />
       <Route
         path="/dashboard"
         element={
