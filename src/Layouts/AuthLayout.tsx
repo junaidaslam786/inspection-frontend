@@ -8,8 +8,8 @@ interface AuthLayoutProps {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
-    <div className="w-screen h-screen">
-      <div className="flex flex-row items-center h-[5vh] md:h-[10vh] px-[1vw]">
+    <div className="w-screen min-h-screen">
+      <div className="w-full flex flex-row items-center h-[10vh] px-[1vw]">
         <img
           src={Image}
           alt="logo"
@@ -19,7 +19,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           &nbsp;&nbsp;Inspection Manager Pro
         </p>
       </div>
-      <div className="w-screen h-[90vh] md:h-[80vh] flex justify-center items-center">
+      <div className="w-full min-h-[90vh] flex justify-center items-center">
         {children}
       </div>
       <AuthFooter />

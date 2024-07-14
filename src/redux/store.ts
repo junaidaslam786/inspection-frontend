@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { combineReducers } from "redux";
 
 import { authApi } from "./api/authApi";
-
-import userReducer from "./features/user/userSlice";
+import userReducer from "./features/userSlice";
+import clientReducer from "./features/clientSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  client: clientReducer,
   [authApi.reducerPath]: authApi.reducer,
 });
 
