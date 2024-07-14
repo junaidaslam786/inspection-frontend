@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface AuthResponse {
-  token: string;
+  access_token: string;
   user?: {
     id: string;
     name: string;
@@ -78,7 +78,7 @@ export const authApi = createApi({
       ) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("token", data.access_token);
         } catch (error) {
           console.error("Login error:", error);
         }
@@ -96,7 +96,7 @@ export const authApi = createApi({
       ) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("token", data.access_token);
         } catch (error) {
           console.error("Login error:", error);
         }
