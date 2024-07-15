@@ -14,7 +14,7 @@ const ManageCustomer: React.FC = () => {
           </div>
           <div>
             <p className="font-semibold">Service Address:</p>
-            <p className="w-[100px] h-[40px] ">132 Street St City, State, ZIP</p>
+            <p className="w-[100px] h-[40px] font-inter  font-semibold text-sm ">132 Street St City, State, ZIP</p>
             <p className="font-semibold mt-2">Service Contact:</p>
             <p>John Smith</p>
             <p>999-999-9999</p>
