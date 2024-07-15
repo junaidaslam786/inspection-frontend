@@ -1,10 +1,10 @@
 import React from 'react'
-import CustomerTable from '../../Components/Customer/CustomerTable'
+import ManageCustomer from '../../Components/Customer/ManageCustomer'
 
-const CustomerTablePage:React.FC = () => {
+const ManageCustomerPage:React.FC = () => {
   return (
-    <CustomerTable />
+    <ManageCustomer />
   )
 }
 
-export default CustomerTablePage
+export default ManageCustomerPage
