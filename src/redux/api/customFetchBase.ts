@@ -5,7 +5,7 @@ import {
   FetchBaseQueryError,
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
-import { logout } from "../features/user/userSlice";
+import { logout } from "../features/userSlice";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 

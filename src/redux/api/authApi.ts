@@ -1,11 +1,27 @@
+// api/authApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface AuthResponse {
-  token: string;
-  user: {
+  access_token: string;
+  user?: {
     id: string;
     name: string;
     email: string;
+    username?: string;
+    role?: string;
+    phone?: string;
+  };
+  client?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    billing_address: string;
+    payment_method: string;
+    type: string;
+    status: string;
+    next_bill_date: string;
   };
 }
 
@@ -14,10 +30,25 @@ interface LoginRequest {
   password: string;
 }
 
-interface RegisterRequest {
+interface UserRegisterRequest {
+  username: string;
+  password: string;
+  email: string;
+  role: string;
+  phone: string;
+}
+
+interface ClientRegisterRequest {
   name: string;
   email: string;
   password: string;
+  phone: string;
+  address: string;
+  billing_address: string;
+  payment_method: string;
+  type: string;
+  status: string;
+  next_bill_date: string;
 }
 
 const baseQuery = fetchBaseQuery({
@@ -35,7 +66,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery,
   endpoints: (builder) => ({
-    login: builder.mutation<AuthResponse, LoginRequest>({
+    loginUser: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials: LoginRequest) => ({
         url: "auth/login",
         method: "POST",
@@ -47,20 +78,50 @@ export const authApi = createApi({
       ) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("token", data.access_token);
         } catch (error) {
           console.error("Login error:", error);
         }
       },
     }),
-    register: builder.mutation<AuthResponse, RegisterRequest>({
-      query: (newUser: RegisterRequest) => ({
+    loginClient: builder.mutation<AuthResponse, LoginRequest>({
+      query: (credentials: LoginRequest) => ({
+        url: "auth/client/login",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(
+        _args: LoginRequest,
+        { queryFulfilled }: { queryFulfilled: Promise<{ data: AuthResponse }> }
+      ) {
+        try {
+          const { data } = await queryFulfilled;
+          localStorage.setItem("token", data.access_token);
+        } catch (error) {
+          console.error("Login error:", error);
+        }
+      },
+    }),
+    registerUser: builder.mutation<AuthResponse, UserRegisterRequest>({
+      query: (newUser: UserRegisterRequest) => ({
         url: "auth/register",
         method: "POST",
         body: newUser,
       }),
     }),
+    registerClient: builder.mutation<AuthResponse, ClientRegisterRequest>({
+      query: (newClient: ClientRegisterRequest) => ({
+        url: "clients/register",
+        method: "POST",
+        body: newClient,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const {
+  useLoginUserMutation,
+  useLoginClientMutation,
+  useRegisterUserMutation,
+  useRegisterClientMutation,
+} = authApi;
