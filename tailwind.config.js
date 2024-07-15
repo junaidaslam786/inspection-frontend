@@ -25,7 +25,11 @@ export default {
       accentColor: {
         purple: ["#6941C6"],
       },
+      colors: {
+        'custom-bg-color': '#F9F5FF',
+      },
     },
   },
   plugins: [],
 };
+
